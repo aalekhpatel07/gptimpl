@@ -1,0 +1,14 @@
+Can you implement exactly one function for me in Python whose name is `fibonacci` that takes in the arguments specified below and returns the type specified below. This function should do exactly as the docstring says which is also described below.
+
+Arguments:
+- `n` that is of type `int`,
+- `a` that is of type `float`,
+- `b` that is of type `float` with a default value of `None`
+
+Return type:
+- `int`
+
+Docstring:
+"Return the n-th fibonacci number."
+
+Can you please only return the function implementation and not return any other text other than that? (Not even the "Sure, here's the implementation")

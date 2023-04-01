@@ -1,6 +1,6 @@
 
 def fibonacci(n: int) -> int:
     """
-    Return the n'th fibonacci number.
+    Return the nth fibonacci number.
     """
 

@@ -1,0 +1,13 @@
+Can you implement exactly one function for me in Python whose name is `{{ function_name }}`{% if has_arguments %} that takes in the arguments specified below{% endif %}{% if has_return_type %} and returns the type specified below{% endif %}{%if has_docstring %}. This function should do exactly as the docstring says which is also described below. Please keep the docstring in the snippet as is.{% endif %}
+{%if has_arguments %}
+Arguments:
+{{ argument_block }}
+{% endif %}
+{%if has_return_type %}
+Return type:
+- `{{return_type}}`
+{% endif %}
+Docstring:
+"{{ docstring }}"
+
+Can you please only return the function implementation and not return any other text other than that? (Not even the "Sure, here's the implementation")
