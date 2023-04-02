@@ -27,17 +27,19 @@ export OPENAI_API_KEY="<key>"
 gptimpl --help
 ```
 ```
-usage: gptimpl [-h] [-v] [-w] FILE [FILE ...]
+usage: gptimpl [-h] [-v] [-w] [-m MODEL] FILE [FILE ...]
 
 Extract a collection of functions from Python files. Provide an OpenAI api key with OPENAI_API_KEY env var.
 
 positional arguments:
-  FILE             The Python files to process.
+  FILE                  The Python files to process.
 
 optional arguments:
-  -h, --help       show this help message and exit
-  -v, --verbose    Specify the verbosity of the output.
-  -w, --overwrite  If specified, the generated files will be overwritten instead of logging to stdout.
+  -h, --help            show this help message and exit
+  -v, --verbose         Specify the verbosity of the output.
+  -w, --overwrite       If specified, the generated files will be overwritten instead of logging to stdout.
+  -m MODEL, --model MODEL
+                        Select the backend model to use. Defaults to gpt-3.5-turbo
 ```
 
 **DISCLAIMER**: Please use the `-w` flag only if you want to overwrite your source files and they are already version controlled!
