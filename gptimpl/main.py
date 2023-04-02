@@ -22,6 +22,7 @@ class Opts:
     files: typing.List[pathlib.Path]
     verbose: int
     overwrite: bool = False
+    model: typing.Optional[str] = None
 
 
 def parse_args() -> Opts:
@@ -53,11 +54,20 @@ def parse_args() -> Opts:
         help="If specified, the generated files will be overwritten instead of logging to stdout."
     )
 
+    parser.add_argument(
+        "-m",
+        "--model",
+        type=str,
+        help="Select the backend model to use. Defaults to gpt-3.5-turbo",
+        default=None
+    )
+
     opts = parser.parse_args()
     return Opts(
         verbose=opts.verbose,
         files=opts.files,
         overwrite=opts.overwrite,
+        model=opts.model
     )
 
 
@@ -95,7 +105,8 @@ def extract_functions(files: typing.List[pathlib.Path]) -> typing.Dict[pathlib.P
 
 
 def request_codegen(
-    extracted_functions: typing.Dict[pathlib.Path, typing.Dict[str, Function]]
+    extracted_functions: typing.Dict[pathlib.Path, typing.Dict[str, Function]],
+    **kwargs
 ) -> typing.Dict[pathlib.Path, typing.Dict[str, str]]:
 
     function_sources = []
@@ -103,7 +114,7 @@ def request_codegen(
     for (_filename, functions) in extracted_functions.items():
         for (function_name, function_body) in functions.items():
             function_sources.append(function_body.quoted)
-    implementations = request_code_snippets(function_sources)
+    implementations = request_code_snippets(function_sources, **kwargs)
 
     impl_iter = iter(implementations)
     implementation_map = dict()
@@ -125,7 +136,7 @@ def main():
     logger.debug("Extracting functions...")
     extracted_functions = extract_functions(opts.files)
     logger.debug("Waiting for codegen...")
-    impls = request_codegen(extracted_functions)
+    impls = request_codegen(extracted_functions, model=opts.model)
     logger.debug("Updating the nodes...")
 
     replacements = dict()
