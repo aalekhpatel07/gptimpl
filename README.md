@@ -1,10 +1,40 @@
 # GPTImpl
 
-Ask ChatGPT to implement your Python functions for you.
+##### Ask ChatGPT to implement your Python functions for you.
+
+## Installation
+___
+
+A distribution is available on PyPI.
+```shell
+pip install gptimpl
+```
 
 ## Usage
+___
+**DISCLAIMER**: Please use the `-w` flag only if you want to overwrite your source files and they are already version controlled! 
+The GPT generated code can be garbage sometimes so it is recommended to overwrite only if you have a way to revert the changes.
 
-Suppose you have a Python file called `example.py` that contains an unimplemented functions as follows:
+```shell
+gptimpl --help
+```
+```
+usage: gptimpl [-h] [-v] [-w] FILE [FILE ...]
+
+Extract a collection of functions from Python files. Provide an OpenAI api key with OPENAI_API_KEY env var.
+
+positional arguments:
+  FILE             The Python files to process.
+
+optional arguments:
+  -h, --help       show this help message and exit
+  -v, --verbose    Specify the verbosity of the output.
+  -w, --overwrite  If specified, the generated files will be overwritten instead of logging to stdout.
+```
+
+### Updating the function body in-place
+Suppose you have a Python file called `example.py` that contains unimplemented functions as follows:
+    
 ```python
 def fibonacci(n: int) -> int:
     """
@@ -19,7 +49,57 @@ def estimate_pi(n: int) -> float:
 ```
 Then we can pass this file through `gptimpl` to generate the implementations for us.
 
+**Note**: Without `--overwrite`, it defaults to printing the replacement contents to stdout.
 ```shell
-gptimpl example.py --overwrite
+gptimpl example.py -v --overwrite
 ```
 
+This overwrites the file with the following patch:
+
+```diff
+-def fibonacci(n: int) -> int:
++def fibonacci(n: int) ->int:
+     """
+     Return the nth fibonacci number.
+     """
++    if n <= 1:
++        return n
++    else:
++        return fibonacci(n - 1) + fibonacci(n - 2)
+ 
+ 
+-def estimate_pi(n: int) -> float:
++def estimate_pi(n: int) ->float:
+     """
+     Estimate Pi using Gregory-Leibniz series
+     using the first n terms.
+     """
++    pi = 0
++    for i in range(n):
++        pi += (-1) ** i / (2 * i + 1)
++    return pi * 4
+```
+
+resulting in an `example.py` that looks like:
+```python
+def fibonacci(n: int) ->int:
+    """
+    Return the nth fibonacci number.
+    """
+    if n <= 1:
+        return n
+    else:
+        return fibonacci(n - 1) + fibonacci(n - 2)
+
+
+def estimate_pi(n: int) ->float:
+    """
+    Estimate Pi using Gregory-Leibniz series
+    using the first n terms.
+    """
+    pi = 0
+    for i in range(n):
+        pi += (-1) ** i / (2 * i + 1)
+    return pi * 4
+
+```

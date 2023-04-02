@@ -21,6 +21,7 @@ logger = logging.getLogger(__name__)
 class Opts:
     files: typing.List[pathlib.Path]
     verbose: int
+    overwrite: bool = False
 
 
 def parse_args() -> Opts:
@@ -55,7 +56,8 @@ def parse_args() -> Opts:
     opts = parser.parse_args()
     return Opts(
         verbose=opts.verbose,
-        files=opts.files
+        files=opts.files,
+        overwrite=opts.overwrite,
     )
 
 
@@ -138,7 +140,13 @@ def main():
 
     for (filename, replacement_value) in replacements.items():
         logger.debug("Generated replacement for: %s", filename)
-        sys.stdout.write(replacement_value)
+
+        if opts.overwrite:
+            logger.debug("Writing replacement to: %s", filename)
+            with open(filename, "w") as f:
+                f.write(replacement_value)
+        else:
+            sys.stdout.write(replacement_value)
 
 
 if __name__ == '__main__':
