@@ -136,6 +136,8 @@ def main():
     logger.debug("Extracting functions...")
     extracted_functions = extract_functions(opts.files)
     logger.debug("Waiting for codegen...")
+    if opts.model is not None:
+        logger.debug("requested model: %s", opts.model)
     impls = request_codegen(extracted_functions, model=opts.model)
     logger.debug("Updating the nodes...")
 
