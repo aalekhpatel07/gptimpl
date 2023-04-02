@@ -8,8 +8,8 @@ from dataclasses import dataclass
 import astor
 import logging
 
-from lib.collector import FunctionCollector, Function
-from lib.ai_codegen import (
+from .collector import FunctionCollector, Function
+from .ai_codegen import (
     request_code_snippets
 )
 
@@ -137,7 +137,7 @@ def main():
         replacements[file] = replacement
 
     for (filename, replacement_value) in replacements.items():
-        logger.debug("Generated replacement for: %s:\n %s", filename, replacement_value)
+        logger.debug("Generated replacement for: %s", filename)
         sys.stdout.write(replacement_value)
 
 

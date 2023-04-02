@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "gptimpl"
+version = "0.1.0"
+description = "Ask ChatGPT to implement your existing python functions."
+authors = ["Aalekh Patel <aalekh.gwpeck.7998@icloud.com>"]
+license = "LICENSE"
+readme = "README.md"
+repository = "https://github.com/aalekhpatel07/chatimpl"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+astor = "0.8.1"
+openai = "0.27.2"
+
+[tool.poetry.scripts]
+gptimpl = "gptimpl.main:main"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[project.urls]
+"Homepage" = "https://github.com/aalekhpatel07/chatimpl"

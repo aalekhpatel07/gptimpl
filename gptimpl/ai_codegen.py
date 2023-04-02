@@ -4,7 +4,7 @@ import os
 
 import openai
 
-from lib.collector import sanitize_codegen
+from .collector import sanitize_codegen
 
 
 CODE_SNIPPET_RE: re.Pattern = re.compile(r"(?s)```python(.+)```")
