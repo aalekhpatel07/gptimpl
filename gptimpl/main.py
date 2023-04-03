@@ -27,8 +27,8 @@ class Opts:
 
 def parse_args() -> Opts:
     parser = argparse.ArgumentParser(
-        description="Extract a collection of functions from Python files. Provide an OpenAI api key with "
-                    "OPENAI_API_KEY env var. "
+        description="Generate implementations for Python functions based on "
+                    "docstrings and function signature using OpenAI.",
     )
 
     parser.add_argument(

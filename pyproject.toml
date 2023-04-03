@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "gptimpl"
-version = "0.1.0"
+version = "0.1.1"
 description = "Ask ChatGPT to implement your existing python functions."
 authors = ["Aalekh Patel <aalekh.gwpeck.7998@icloud.com>"]
 license = "LICENSE"
