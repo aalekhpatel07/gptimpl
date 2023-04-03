@@ -29,7 +29,7 @@ gptimpl --help
 ```
 usage: gptimpl [-h] [-v] [-w] [-m MODEL] FILE [FILE ...]
 
-Extract a collection of functions from Python files. Provide an OpenAI api key with OPENAI_API_KEY env var.
+Generate implementations for Python functions based on docstrings and function signature using OpenAI.
 
 positional arguments:
   FILE                  The Python files to process.
