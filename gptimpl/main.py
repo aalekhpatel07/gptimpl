@@ -17,13 +17,33 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
+class PythonNode:
+    root_file: typing.Optional[pathlib.Path]
+    func_name: typing.Optional[str]
+
+    def __init__(self, root_file: typing.Optional[pathlib.Path], func_name: typing.Optional[str]):
+        self.root_file = root_file
+        self.func_name = func_name
+
+    @classmethod
+    def from_str(cls, node_id: str) -> 'PythonNode':
+        root_file, *within_file = node_id.split("::")
+
+        if not root_file.endswith(".py"):
+            message = "Node_ID must be of the form '<file_path>.py::<func_name>'. Provided node_id: %s" % node_id
+            raise argparse.ArgumentTypeError(message)
+
+        return cls(
+            root_file=pathlib.Path(root_file),
+            func_name=".".join(within_file) if len(within_file) else None
+        )
+
 @dataclass
 class Opts:
-    files: typing.List[pathlib.Path]
+    files: typing.List[PythonNode]
     verbose: int
     overwrite: bool = False
     model: typing.Optional[str] = None
-
 
 def parse_args() -> Opts:
     parser = argparse.ArgumentParser(
@@ -32,11 +52,14 @@ def parse_args() -> Opts:
     )
 
     parser.add_argument(
-        "files",
-        metavar="FILE",
+        "node_ids",
+        metavar="NODE",
         nargs='+',
-        help="The Python files to process.",
-        type=pathlib.Path,
+        help=(
+            "The (pytest-like) node_ids for Python functions/files "
+            "to process. For example, test_mod.py::TestClass::test_method, or simply, test_mod.py"
+        ),
+        type=PythonNode.from_str,
     )
 
     parser.add_argument(
@@ -65,7 +88,7 @@ def parse_args() -> Opts:
     opts = parser.parse_args()
     return Opts(
         verbose=opts.verbose,
-        files=opts.files,
+        files=opts.node_ids,
         overwrite=opts.overwrite,
         model=opts.model
     )
@@ -80,8 +103,9 @@ class FunctionImplementor(ast.NodeTransformer):
         self.implementations = implementations
 
     def visit_FunctionDef(self, node: ast.FunctionDef) -> typing.Any:
-        parsed = ast.parse(self.implementations[node.name])
-        node.body = parsed.body[0].body
+        if node.name in self.implementations:
+            parsed = ast.parse(self.implementations[node.name])
+            node.body = parsed.body[0].body
         return node
 
     def generate_replacement(self) -> str:
@@ -92,15 +116,16 @@ class FunctionImplementor(ast.NodeTransformer):
         return astor.to_source(tree)
 
 
-def extract_functions(files: typing.List[pathlib.Path]) -> typing.Dict[pathlib.Path, typing.Dict[str, Function]]:
+def extract_functions(files: typing.List[PythonNode]) -> typing.Dict[pathlib.Path, typing.Dict[str, Function]]:
     results = dict()
     for file in files:
-        analyzer = FunctionCollector(filename=file)
+        analyzer = FunctionCollector(filename=file.root_file)
         analyzer.check()
         for function in analyzer.functions:
-            if file not in results:
-                results[file] = dict()
-            results[file][function.name] = function
+            if file.root_file not in results:
+                results[file.root_file] = dict()
+            if file.func_name is None or file.func_name == function.name:
+                results[file.root_file][function.name] = function
     return results
 
 
